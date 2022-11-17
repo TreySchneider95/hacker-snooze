@@ -1,9 +1,15 @@
+NUMBER_OF_STORIES = 100
+COMMENT_LIMITER = 10
+
+
+
+
 const loader = document.querySelector('#loader')
 async function theStories(choosenStories){
     let response = await fetch(`https://hacker-news.firebaseio.com/v0/${choosenStories}stories.json?print=pretty`)
     let data = await response.json()
     // Max to set is 200 because thats all ask show and job can provide
-    data.length = 100
+    data.length = NUMBER_OF_STORIES
     data.forEach(async function(ele){
         let response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${ele}.json?print=pretty`)
         let data = await response.json()
@@ -39,6 +45,10 @@ async function theStories(choosenStories){
             // comments list
             let commentUl = document.createElement("ul")
             commentUl.style.display = "none"
+            // Setting limit on comments so API doesnt throw errors
+            if(data.kids.length > COMMENT_LIMITER){
+                data.kids.length = COMMENT_LIMITER
+            }
             if(data.kids){
                 data.kids.forEach(async function(ele){
                     let response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${ele}.json?print=pretty`)
